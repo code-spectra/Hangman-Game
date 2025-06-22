@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎮 لعبة الحروف الذكية</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .login-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .game-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .scores-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    select, input, button {
+      font-size: 16px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      margin: 5px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+    }
+
+    button {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      font-weight: bold;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(45deg, #2196F3, #1976D2);
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #f44336, #d32f2f);
+    }
+
+    #themes-container {
+      font-size: 2em;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 15px;
+      letter-spacing: 0.3em;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .game-info > div {
+      background: rgba(255,255,255,0.1);
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin: 5px;
+      min-width: 150px;
+    }
+
+    #status {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .win { 
+      background: linear-gradient(45deg, #00ff88, #00cc70);
+      color: white;
+    }
+    
+    .lose { 
+      background: linear-gradient(45deg, #ff4444, #cc3333);
+      color: white;
+    }
+
+    .scores-table {
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    th {
+      background: rgba(255,255,255,0.2);
+      font-weight: bold;
+    }
+
+    .rank-1 { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; }
+    .rank-2 { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; }
+    .rank-3 { background: linear-gradient(45deg, #cd7f32, #daa520); color: white; }
+
+    .hidden { display: none; }
+
+    .user-info {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .game-info {
+        flex-direction: column;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      #themes-container {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 لعبة الحروف الذكية</h1>
+
+    <!-- Login Section -->
+    <div id="login-section" class="login-section">
+      <h2>👤 أدخل اسمك للبدء</h2>
+      <input type="text" id="username" placeholder="اكتب اسمك هنا..." maxlength="20">
+      <button id="start-game" class="btn-primary">🚀 ابدأ اللعب</button>
+    </div>
+
+    <!-- Game Section -->
+    <div id="game-section" class="game-section hidden">
+      <div class="user-info">
+        <h3>مرحباً <span id="current-user"></span>! 🎯</h3>
+        <p>أفضل نتيجة لك: <span id="user-best-score">0</span> نقطة</p>
+      </div>
+
+      <div style="margin: 20px 0;">
+        <label for="theme">🎯 اختر الثيم:</label>
+        <select id="theme">
+          <option value="clubs">أندية</option>
+          <option value="players">لاعبين</option>
+          <option value="countries">بلدان</option>
+          <option value="leagues">دوريات</option>
+          <option value="sports">رياضات</option>
+        </select>
+
+        <label for="difficulty">🧠 مستوى الصعوبة:</label>
+        <select id="difficulty">
+          <option value="easy">سهل (10 محاولات)</option>
+          <option value="medium" selected>متوسط (8 محاولات)</option>
+          <option value="hard">صعب (5 محاولات)</option>
+        </select>
+      </div>
+
+      <div id="themes-container">
+        <p id="randomTeam">- - -</p>
+      </div>
+
+      <div>
+        <input type="text" id="user-letter" maxlength="1" placeholder="A">
+        <button id="valid_btn" class="btn-primary">✅ تحقق</button>
+        <button id="restart" class="btn-secondary">🔄 إعادة</button>
+        <button id="giveup" class="btn-danger">🛑 استسلام</button>
+      </div>
+
+      <div class="game-info">
+        <div>
+          <strong id="tries">المحاولات المتبقية: 8</strong>
+        </div>
+        <div>
+          <strong id="timer">⏳ الوقت: 60 ثانية</strong>
+        </div>
+        <div>
+          <strong id="current-score">النقاط: 0</strong>
+        </div>
+      </div>
+
+      <div>
+        <p id="used-letters">🅰️ الحروف المجربة: </p>
+      </div>
+
+      <div id="status"></div>
+
+      <button id="show-scores" class="btn-secondary">🏆 عرض الترتيب</button>
+      <button id="change-user" class="btn-secondary">👤 تغيير المستخدم</button>
+    </div>
+
+    <!-- Scores Section -->
+    <div id="scores-section" class="scores-section hidden">
+      <h2>🏆 ترتيب اللاعبين</h2>
+      
+      <div style="margin: 20px 0;">
+        <label for="score-theme">فلترة حسب الثيم:</label>
+        <select id="score-theme">
+          <option value="all">جميع الثيمات</option>
+          <option value="clubs">أندية</option>
+          <option value="players">لاعبين</option>
+          <option value="countries">بلدان</option>
+          <option value="leagues">دوريات</option>
+          <option value="sports">رياضات</option>
+        </select>
+
+        <label for="score-difficulty">فلترة حسب الصعوبة:</label>
+        <select id="score-difficulty">
+          <option value="all">جميع المستويات</option>
+          <option value="easy">سهل</option>
+          <option value="medium">متوسط</option>
+          <option value="hard">صعب</option>
+        </select>
+      </div>
+
+      <div class="scores-table">
+        <table id="scores-table">
+          <thead>
+            <tr>
+              <th>الترتيب</th>
+              <th>اسم اللاعب</th>
+              <th>النقاط</th>
+              <th>الثيم</th>
+              <th>المستوى</th>
+              <th>التاريخ</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody">
+          </tbody>
+        </table>
+      </div>
+
+      <button id="back-to-game" class="btn-primary">🎮 العودة للعبة</button>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="win-sound" src="./win.mp3">  </audio>
+  <audio id="lose-sound" src="./lose.mp3">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Hvp2Q" type="audio/wav">
+  </audio>
+
+  <script>
+    // DOM Elements
+    const loginSection = document.getElementById("login-section");
+    const gameSection = document.getElementById("game-section");
+    const scoresSection = document.getElementById("scores-section");
+    
+    const usernameInput = document.getElementById("username");
+    const startGameBtn = document.getElementById("start-game");
+    const currentUserSpan = document.getElementById("current-user");
+    const userBestScoreSpan = document.getElementById("user-best-score");
+    
+    const user_letter = document.getElementById("user-letter");
+    const valid_btn = document.getElementById("valid_btn");
+    const restart_btn = document.getElementById("restart");
+    const giveup_btn = document.getElementById("giveup");
+    const difficulty = document.getElementById("difficulty");
+    const theme = document.getElementById("theme");
+
+    const randomTeam = document.getElementById("randomTeam");
+    const triesDisplay = document.getElementById("tries");
+    const usedLettersDisplay = document.getElementById("used-letters");
+    const status = document.getElementById("status");
+    const timerDisplay = document.getElementById("timer");
+    const currentScoreDisplay = document.getElementById("current-score");
+    
+    const showScoresBtn = document.getElementById("show-scores");
+    const changeUserBtn = document.getElementById("change-user");
+    const backToGameBtn = document.getElementById("back-to-game");
+    
+    const scoreThemeSelect = document.getElementById("score-theme");
+    const scoreDifficultySelect = document.getElementById("score-difficulty");
+    const scoresTable = document.getElementById("scores-tbody");
+
+    const winSound = document.getElementById("win-sound");
+    const loseSound = document.getElementById("lose-sound");
+    
+    // Game Variables
+    let currentUser = "";
+    let maxTries = 8;
+    let tries = maxTries;
+    let selected_word = "";
+    let hidden_word = [];
+    let usedLetters = [];
+    let countdown;
+    let timeLeft = 60;
+    let currentScore = 0;
+    let gameStartTime = 0;
+
+    // Word Lists
+    const wordLists = {
+      clubs: [
+        "Real Madrid", "Barcelona", "Manchester City", "Manchester United", "Chelsea",
+        "Arsenal", "Liverpool", "Tottenham", "PSG", "Bayern Munich",
+        "Juventus", "AC Milan", "Inter Milan", "Atletico Madrid", "Sevilla",
+        "Borussia Dortmund", "AS Roma", "Napoli", "Ajax", "Benfica",
+        "Sporting CP", "Porto", "Lazio", "Galatasaray", "Fenerbahce",
+        "Besiktas", "Zenit", "Shakhtar Donetsk", "Celtic", "Rangers",
+        "Al Ahly", "Zamalek", "Wydad", "Raja Casablanca", "Esperance",
+        "Kaiser Chiefs", "Orlando Pirates", "Club America", "Tigres UANL", "Santos Laguna",
+        "Flamengo", "Palmeiras", "Corinthians", "Boca Juniors", "River Plate",
+        "Newell's Old Boys", "Al Hilal", "Al Nassr", "Al Ittihad", "Al Shabab"
+      ],
+      players: [
+        "Cristiano Ronaldo", "Lionel Messi", "Neymar", "Kylian Mbappe", "Erling Haaland",
+        "Mohamed Salah", "Karim Benzema", "Robert Lewandowski", "Kevin De Bruyne", "Luka Modric",
+        "Zlatan Ibrahimovic", "Sadio Mane", "Harry Kane", "Antoine Griezmann", "Vinicius Jr",
+        "Rodrygo", "Pedri", "Gavi", "Eden Hazard", "Paul Pogba",
+        "Ngolo Kante", "Riyad Mahrez", "Jack Grealish", "Jude Bellingham", "Bruno Fernandes",
+        "Casemiro", "Toni Kroos", "Ilkay Gundogan", "Marco Verratti", "Frenkie De Jong",
+        "Romelu Lukaku", "Angel Di Maria", "Heung-min Son", "Dusan Vlahovic", "Joao Felix",
+        "Phil Foden", "Declan Rice", "Achraf Hakimi", "Hakim Ziyech", "Yassine Bounou",
+        "Sofyan Amrabat", "En-Nesyri", "Thibaut Courtois", "Marc-Andre ter Stegen", "Emiliano Martinez",
+        "Diogo Jota", "Darwin Nunez", "Lautaro Martinez", "James Rodriguez", "Edinson Cavani"
+      ],
+      countries: [
+        "Morocco", "Brazil", "Argentina", "France", "Spain",
+        "Portugal", "Germany", "Italy", "Netherlands", "Belgium",
+        "England", "Uruguay", "Senegal", "Japan", "South Korea",
+        "USA", "Mexico", "Canada", "Switzerland", "Austria",
+        "Croatia", "Serbia", "Turkey", "Poland", "Norway",
+        "Sweden", "Denmark", "Ghana", "Cameroon", "Nigeria",
+        "Algeria", "Tunisia", "Egypt", "Qatar", "Saudi Arabia",
+        "UAE", "Iraq", "Iran", "Russia", "Ukraine",
+        "China", "India", "Australia", "New Zealand", "South Africa",
+        "Ivory Coast", "Chile", "Peru", "Colombia", "Venezuela"
+      ],
+      leagues: [
+        "Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1",
+        "Saudi Pro League", "Champions League", "Europa League", "Conference League", "MLS",
+        "Eredivisie", "Turkish Super Lig", "Brazilian Serie A", "Argentine Primera Division", "Russian Premier League",
+        "Chinese Super League", "J1 League", "K League", "A-League", "South African Premier Division",
+        "Belgian Pro League", "Swiss Super League", "Ukrainian Premier League", "Greek Super League", "Scottish Premiership",
+        "Portuguese Primeira Liga", "Mexican Liga MX", "MLS Next Pro", "Egyptian Premier League", "Moroccan Botola",
+        "UAE Pro League", "Qatar Stars League", "Iraqi Premier League", "Iran Pro League", "Indian Super League",
+        "CAF Champions League", "Copa Libertadores", "Copa Sudamericana", "CONCACAF Champions Cup", "AFC Champions League",
+        "National League", "Segunda División", "Serie B", "2. Bundesliga", "Ligue 2",
+        "Saudi First Division", "Championship", "Superettan", "Liga 1", "Kuwaiti Premier League"
+      ],
+      sports: [
+        "Football", "Basketball", "Tennis", "Swimming", "Running",
+        "Cycling", "Boxing", "Cricket", "Volleyball", "Baseball",
+        "Table Tennis", "Golf", "Rugby", "Wrestling", "Karate",
+        "Judo", "Skateboarding", "Surfing", "Climbing", "Diving",
+        "Fencing", "Archery", "Badminton", "Hockey", "Ice Hockey",
+        "Snowboarding", "Skiing", "Motorsport", "Equestrian", "Gymnastics",
+        "Handball", "Rowing", "Triathlon", "Bodybuilding", "Polo",
+        "Snooker", "Chess", "Muay Thai", "Kickboxing", "Parkour",
+        "Paintball", "Bowling", "Canoeing", "Sailing", "Paragliding",
+        "Drone Racing", "BMX", "Lacrosse", "Kabaddi", "American Football"
+      ]
+    };
+
+    // Storage Functions
+    function getScores() {
+      const scores = localStorage.getItem('hangman_scores');
+      return scores ? JSON.parse(scores) : [];
+    }
+
+    function saveScore(username, score, theme, difficulty) {
+      const scores = getScores();
+      const newScore = {
+        username: username,
+        score: score,
+        theme: theme,
+        difficulty: difficulty,
+        date: new Date().toLocaleDateString('ar-SA')
+      };
+      scores.push(newScore);
+      localStorage.setItem('hangman_scores', JSON.stringify(scores));
+    }
+
+    function getUserBestScore(username) {
+      const scores = getScores();
+      const userScores = scores.filter(s => s.username === username);
+      return userScores.length > 0 ? Math.max(...userScores.map(s => s.score)) : 0;
+    }
+
+    // Game Functions
+    function calculateScore() {
+      const difficultyMultiplier = difficulty.value === 'hard' ? 3 : difficulty.value === 'medium' ? 2 : 1;
+      const timeBonus = Math.max(0, timeLeft);
+      const triesBonus = tries * 10;
+      const wordLengthBonus = selected_word.length * 5;
+      
+      return (timeBonus + triesBonus + wordLengthBonus) * difficultyMultiplier;
+    }
+
+    function setDifficulty() {
+      const level = difficulty.value;
+      if (level === "easy") maxTries = 10;
+      else if (level === "medium") maxTries = 8;
+      else maxTries = 5;
+    }
+
+    function playGame() {
+      setDifficulty();
+
+      const themeValue = theme.value;
+      const words = wordLists[themeValue];
+      const randomIndex = Math.floor(Math.random() * words.length);
+
+      selected_word = words[randomIndex].toUpperCase();
+      hidden_word = [];
+
+      for (let char of selected_word) {
+        hidden_word.push(char === " " ? " " : "-");
+      }
+
+      tries = maxTries;
+      usedLetters = [];
+      timeLeft = 60;
+      currentScore = 0;
+      gameStartTime = Date.now();
+      
+      clearInterval(countdown);
+      startTimer();
+      updateDisplay();
+      status.textContent = "";
+      status.className = "";
+    }
+
+    function updateDisplay() {
+      randomTeam.textContent = hidden_word.join(" ");
+      triesDisplay.textContent = `المحاولات المتبقية: ${tries}`;
+      usedLettersDisplay.textContent = "🅰️ الحروف المجربة: " + usedLetters.join(" ");
+      currentScoreDisplay.textContent = `النقاط: ${currentScore}`;
+    }
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `⏳ الوقت: ${timeLeft} ثانية`;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          endGame(`⏰ انتهى الوقت! الكلمة كانت: ${selected_word}`, false);
+        }
+      }, 1000);
+    }
+
+    function endGame(message, win) {
+      clearInterval(countdown);
+      
+      for (let i = 0; i < selected_word.length; i++) {
+        if (hidden_word[i] === "-") hidden_word[i] = selected_word[i];
+      }
+      
+      if (win) {
+        currentScore = calculateScore();
+        saveScore(currentUser, currentScore, theme.value, difficulty.value);
+        userBestScoreSpan.textContent = getUserBestScore(currentUser);
+        winSound.play().catch(() => {});
+      } else {
+        currentScore = 0;
+        loseSound.play().catch(() => {});
+      }
+      
+      updateDisplay();
+      status.textContent = message;
+      status.className = win ? "win" : "lose";
+    }
+
+    function displayScores() {
+      const scores = getScores();
+      const themeFilter = scoreThemeSelect.value;
+      const difficultyFilter = scoreDifficultySelect.value;
+      
+      let filteredScores = scores;
+      
+      if (themeFilter !== 'all') {
+        filteredScores = filteredScores.filter(s => s.theme === themeFilter);
+      }
+      
+      if (difficultyFilter !== 'all') {
+        filteredScores = filteredScores.filter(s => s.difficulty === difficultyFilter);
+      }
+      
+      filteredScores.sort((a, b) => b.score - a.score);
+      
+      scoresTable.innerHTML = '';
+      
+      filteredScores.slice(0, 50).forEach((score, index) => {
+        const row = document.createElement('tr');
+        const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+        row.className = rankClass;
+        
+        const themeNames = {
+          clubs: 'أندية',
+          players: 'لاعبين', 
+          countries: 'بلدان',
+          leagues: 'دوريات',
+          sports: 'رياضات'
+        };
+        
+        const difficultyNames = {
+          easy: 'سهل',
+          medium: 'متوسط',
+          hard: 'صعب'
+        };
+        
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${score.username}</td>
+          <td>${score.score}</td>
+          <td>${themeNames[score.theme] || score.theme}</td>
+          <td>${difficultyNames[score.difficulty] || score.difficulty}</td>
+          <td>${score.date}</td>
+        `;
+        
+        scoresTable.appendChild(row);
+      });
+      
+      if (filteredScores.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="6">لا توجد نتائج للعرض</td>';
+        scoresTable.appendChild(row);
+      }
+    }
+
+    // Event Listeners
+    startGameBtn.addEventListener("click", () => {
+      const username = usernameInput.value.trim();
+      if (username === "") {
+        alert("❌ يرجى إدخال اسمك أولاً!");
+        return;
+      }
+      
+      currentUser = username;
+      currentUserSpan.textContent = currentUser;
+      userBestScoreSpan.textContent = getUserBestScore(currentUser);
+      
+      loginSection.classList.add('hidden');
+      gameSection.classList.remove('hidden');
+      
+      playGame();
+    });
+
+    valid_btn.addEventListener("click", () => {
+      const input = user_letter.value.toUpperCase();
+      user_letter.value = "";
+
+      if (!input.match(/[A-Z]/) || input.length !== 1) {
+        alert("❌ أدخل حرفًا صحيحًا من A إلى Z.");
+        return;
+      }
+
+      if (usedLetters.includes(input)) {
+        alert("⚠️ لقد جربت هذا الحرف من قبل.");
+        return;
+      }
+
+      if (status.textContent !== "" && status.className !== "") return;
+
+      usedLetters.push(input);
+
+      let found = false;
+      for (let i = 0; i < selected_word.length; i++) {
+        if (selected_word[i] === input && hidden_word[i] !== input) {
+          hidden_word[i] = input;
+          found = true;
+        }
+      }
+
+      if (!found) {
+        tries--;
+      }
+
+      updateDisplay();
+
+      if (!hidden_word.includes("-")) {
+        endGame("🎉 فزت! مبروك! 👑", true);
+      } else if (tries === 0) {
+        endGame(`💀 خسرت! الكلمة كانت: ${selected_word}`, false);
+      }
+    });
+
+    restart_btn.addEventListener("click", () => {
+      user_letter.value = "";
+      playGame();
+    });
+
+    giveup_btn.addEventListener("click", () => {
+      endGame(`😢 لقد استسلمت! الكلمة كانت: ${selected_word}`, false);
+    });
+
+    difficulty.addEventListener("change", playGame);
+    theme.addEventListener("change", playGame);
+
+    showScoresBtn.addEventListener("click", () => {
+      gameSection.classList.add('hidden');
+      scoresSection.classList.remove('hidden');
+      displayScores();
+    });
+
+    changeUserBtn.addEventListener("click", () => {
+      gameSection.classList.add('hidden');
+      loginSection.classList.remove('hidden');
+      usernameInput.value = "";
+    });
+
+    backToGameBtn.addEventListener("click", () => {
+      scoresSection.classList.add('hidden');
+      gameSection.classList.remove('hidden');
+    });
+
+    scoreThemeSelect.addEventListener("change", displayScores);
+    scoreDifficultySelect.addEventListener("change", displayScores);
+
+    // Keyboard support
+    user_letter.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        valid_btn.click();
+      }
+    });
+
+    usernameInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        startGameBtn.click();
+      }
+    });
+
+    // Focus on input
+    usernameInput.focus();
+  </script>
+</body>
+</html>

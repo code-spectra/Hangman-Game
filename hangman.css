@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #111827, #1f2937);
+  color: #f9fafb;
+  text-align: center;
+  padding: 30px;
+  margin: 0;
+}
+
+h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  color: #facc15; /* gold */
+  text-shadow: 0 0 10px #facc15;
+}
+
+select, input, button {
+  font-size: 20px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  margin: 10px 5px;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input {
+  width: 60px;
+  text-align: center;
+  background-color: #1e293b;
+  color: #f9fafb;
+  border: 1px solid #64748b;
+}
+
+button {
+  background-color: #334155;
+  color: #f9fafb;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #475569;
+  transform: scale(1.05);
+}
+
+#valid_btn { background-color: #22c55e; } /* green */
+#restart   { background-color: #3b82f6; } /* blue */
+#giveup    { background-color: #ef4444; } /* red */
+
+#themes-container {
+  font-size: 36px;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: fit-content;
+  letter-spacing: 8px;
+  word-spacing: 16px;
+  color: #ffffff;
+  text-shadow: 0 0 5px #10b981;
+}
+
+#tries, #status, #used-letters, #timer {
+  font-size: 22px;
+  margin-top: 12px;
+}
+
+#used-letters {
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+#status.win {
+  color: #22c55e;
+  font-weight: bold;
+  text-shadow: 0 0 5px #22c55e;
+}
+
+#status.lose {
+  color: #ef4444;
+  font-weight: bold;
+  text-shadow: 0 0 5px #ef4444;
+}
+
+#timer {
+  color: #0ea5e9;
+}

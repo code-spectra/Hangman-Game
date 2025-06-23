@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎮 لعبة الحروف الذكية</title>
-  <script defer data-domain="code-spectra.github.io/hangman-game" src="https://plausible.io/js/script.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -28,26 +27,11 @@
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
 
-    .login-section {
+    .login-section, .game-section, .scores-section, .help-section {
       background: rgba(255,255,255,0.1);
       border-radius: 15px;
       padding: 20px;
       margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-    }
-
-    .game-section {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-    }
-
-    .scores-section {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
       backdrop-filter: blur(10px);
     }
 
@@ -173,6 +157,18 @@
       margin-bottom: 15px;
     }
 
+    .help-content {
+      text-align: left;
+      line-height: 1.6;
+      background: rgba(255,255,255,0.2);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .help-content h3 {
+      color: #ffd700;
+    }
+
     @media (max-width: 600px) {
       .game-info {
         flex-direction: column;
@@ -187,6 +183,8 @@
       }
     }
   </style>
+
+    <script defer data-domain="code-spectra.github.io/hangman-game" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
   <div class="container">
@@ -197,6 +195,7 @@
       <h2>👤 أدخل اسمك للبدء</h2>
       <input type="text" id="username" placeholder="اكتب اسمك هنا..." maxlength="20">
       <button id="start-game" class="btn-primary">🚀 ابدأ اللعب</button>
+      <button id="show-help" class="btn-secondary">❓ Guide du jeu</button>
     </div>
 
     <!-- Game Section -->
@@ -255,6 +254,7 @@
 
       <button id="show-scores" class="btn-secondary">🏆 عرض الترتيب</button>
       <button id="change-user" class="btn-secondary">👤 تغيير المستخدم</button>
+      <button id="game-help" class="btn-secondary">❓ Guide du jeu</button>
     </div>
 
     <!-- Scores Section -->
@@ -300,6 +300,54 @@
 
       <button id="back-to-game" class="btn-primary">🎮 العودة للعبة</button>
     </div>
+    
+    <!-- Help Section (Documentation) -->
+    <div id="help-section" class="help-section hidden">
+      <h2>📚 Guide du Jeu</h2>
+      
+      <div class="help-content">
+        <h3>🎯 Comment jouer</h3>
+        <p>Bienvenue dans le Jeu des Lettres Intelligentes ! C'est un jeu de type pendu où vous devez deviner un mot caché en proposant des lettres une par une.</p>
+        
+        <h3>🎮 Règles du jeu</h3>
+        <ul>
+          <li><strong>Objectif :</strong> Deviner le mot caché avant d'épuiser toutes vos tentatives ou que le temps ne soit écoulé.</li>
+          <li><strong>Proposer une lettre :</strong> Entrez une lettre (A-Z) dans le champ et cliquez sur "Vérifier".</li>
+          <li><strong>Tentatives :</strong> Vous avez un nombre limité de tentatives selon le niveau de difficulté choisi.</li>
+          <li><strong>Temps :</strong> Vous avez 60 secondes pour deviner le mot.</li>
+        </ul>
+        
+        <h3>🏆 Calcul du score</h3>
+        <p>Votre score est calculé en fonction de :</p>
+        <ul>
+          <li>Le temps restant</li>
+          <li>Le nombre de tentatives restantes</li>
+          <li>La longueur du mot</li>
+          <li>Le niveau de difficulté choisi</li>
+        </ul>
+        
+        <h3>🎯 Thèmes disponibles</h3>
+        <ul>
+          <li><strong>Clubs :</strong> Noms d'équipes de football</li>
+          <li><strong>Joueurs :</strong> Noms de footballeurs célèbres</li>
+          <li><strong>Pays :</strong> Noms de pays</li>
+          <li><strong>Ligues :</strong> Noms de championnats de football</li>
+          <li><strong>Sports :</strong> Différents types de sports</li>
+        </ul>
+        
+        <h3>🧠 Niveaux de difficulté</h3>
+        <ul>
+          <li><strong>Facile :</strong> 10 tentatives</li>
+          <li><strong>Moyen :</strong> 8 tentatives</li>
+          <li><strong>Difficile :</strong> 5 tentatives</li>
+        </ul>
+        
+        <h3>💾 Classement</h3>
+        <p>Vos scores sont sauvegardés dans le classement global. Vous pouvez consulter les meilleurs scores par thème et niveau de difficulté.</p>
+      </div>
+      
+      <button id="back-from-help" class="btn-primary">🔙 Retour</button>
+    </div>
   </div>
 
   <!-- Audio -->
@@ -308,11 +356,52 @@
     <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Hvp2Q" type="audio/wav">
   </audio>
 
+  <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYASpqYA979jdTdlNpkZBQiJK_PkWfjyg",
+            authDomain: "hangman-game-a0eed.firebaseapp.com",
+            databaseURL: "https://hangman-game-a0eed-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "hangman-game-a0eed",
+            storageBucket: "hangman-game-a0eed.firebasestorage.app",
+            messagingSenderId: "171935932336",
+            appId: "1:171935932336:web:5d8c94130455f8206c8075"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Make functions available globally
+        window.saveScoreFirebase = function (name, score, theme, difficulty) {
+            push(ref(db, "scores"), {
+                name,
+                score,
+                theme,
+                difficulty,
+                time: new Date().toISOString()
+            });
+        };
+
+        // Load leaderboard from Firebase
+        window.loadLeaderboardFirebase = function (callback) {
+            onValue(ref(db, "scores"), (snapshot) => {
+                const data = snapshot.val();
+                callback(data ? Object.values(data) : []);
+            });
+        };
+    </script>
+
   <script>
     // DOM Elements
     const loginSection = document.getElementById("login-section");
     const gameSection = document.getElementById("game-section");
     const scoresSection = document.getElementById("scores-section");
+    const helpSection = document.getElementById("help-section");
     
     const usernameInput = document.getElementById("username");
     const startGameBtn = document.getElementById("start-game");
@@ -341,6 +430,10 @@
     const scoreDifficultySelect = document.getElementById("score-difficulty");
     const scoresTable = document.getElementById("scores-tbody");
 
+    const showHelpBtn = document.getElementById("show-help");
+    const gameHelpBtn = document.getElementById("game-help");
+    const backFromHelpBtn = document.getElementById("back-from-help");
+
     const winSound = document.getElementById("win-sound");
     const loseSound = document.getElementById("lose-sound");
     
@@ -355,6 +448,7 @@
     let timeLeft = 60;
     let currentScore = 0;
     let gameStartTime = 0;
+    let previousSection = loginSection;
 
     // Word Lists
     const wordLists = {
@@ -437,6 +531,11 @@
       };
       scores.push(newScore);
       localStorage.setItem('hangman_scores', JSON.stringify(scores));
+      
+      // Save to Firebase as well if available
+      if (window.saveScoreFirebase) {
+        window.saveScoreFirebase(username, score, theme, difficulty);
+      }
     }
 
     function getUserBestScore(username) {
@@ -531,7 +630,44 @@
     }
 
     function displayScores() {
-      const scores = getScores();
+      scoresTable.innerHTML = '<tr><td colspan="6">Chargement du classement...</td></tr>';
+      
+      // Attempt to load from Firebase first
+      if (window.loadLeaderboardFirebase) {
+        window.loadLeaderboardFirebase((firebaseScores) => {
+          const localScores = getScores();
+          
+          // Combine and deduplicate scores
+          let allScores = [...localScores];
+          
+          // Add Firebase scores that aren't in local storage
+          if (firebaseScores && firebaseScores.length > 0) {
+            firebaseScores.forEach(fbScore => {
+              if (!allScores.some(localScore => 
+                localScore.username === fbScore.name && 
+                localScore.score === fbScore.score && 
+                localScore.theme === fbScore.theme &&
+                localScore.difficulty === fbScore.difficulty)) {
+                allScores.push({
+                  username: fbScore.name,
+                  score: fbScore.score,
+                  theme: fbScore.theme,
+                  difficulty: fbScore.difficulty,
+                  date: new Date(fbScore.time).toLocaleDateString('ar-SA')
+                });
+              }
+            });
+          }
+          
+          filterAndDisplayScores(allScores);
+        });
+      } else {
+        // Fallback to local storage only
+        filterAndDisplayScores(getScores());
+      }
+    }
+    
+    function filterAndDisplayScores(scores) {
       const themeFilter = scoreThemeSelect.value;
       const difficultyFilter = scoreDifficultySelect.value;
       
@@ -675,6 +811,24 @@
 
     scoreThemeSelect.addEventListener("change", displayScores);
     scoreDifficultySelect.addEventListener("change", displayScores);
+    
+    // Help section listeners
+    showHelpBtn.addEventListener("click", () => {
+      previousSection = loginSection;
+      loginSection.classList.add('hidden');
+      helpSection.classList.remove('hidden');
+    });
+    
+    gameHelpBtn.addEventListener("click", () => {
+      previousSection = gameSection;
+      gameSection.classList.add('hidden');
+      helpSection.classList.remove('hidden');
+    });
+    
+    backFromHelpBtn.addEventListener("click", () => {
+      helpSection.classList.add('hidden');
+      previousSection.classList.remove('hidden');
+    });
 
     // Keyboard support
     user_letter.addEventListener("keypress", (e) => {
@@ -693,7 +847,7 @@
     usernameInput.focus();
   </script>
   <p style="font-size: 14px; opacity: 0.6">
-    📊 يتم احتساب عدد الزيارات بشكل مجهول لضمان الخصوصية الكاملة، بدون تتبع أو استخدام الكوكيز.
-  </p>
+  📊 يتم احتساب عدد الزيارات بشكل مجهول لضمان الخصوصية الكاملة، بدون تتبع أو استخدام الكوكيز.
+</p>
 </body>
 </html>
